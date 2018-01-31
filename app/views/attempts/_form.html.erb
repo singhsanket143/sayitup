@@ -1,0 +1,140 @@
+
+
+<style>
+  #submit_atempt{
+    margin-left: 500px;
+}
+</style>
+<style type="text/css">
+ .banner {
+  background: #fff;
+  font-family: Lato, sans-serif;
+  margin-bottom: 2px;
+}
+.navbar-nav-primary {
+  text-transform: uppercase;
+}
+</style>
+<nav class="navbar navbar-default banner navbar-fixed-top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header" style="float: none;">
+      <div class="alert alert-info navbar-left" id="note" style="margin-bottom: 1px;">
+          <strong>Please dont click anywhere else aprt from the browser window and current tab else your test will be submitted."</strong>
+      </div>
+      <div class="alert alert-info navbar-right" id="timer" style="margin-bottom: 1px;padding-bottom;padding-bottom: 1px;padding-top: 5px;margin-right: 2px;">
+       <span><strong style="font-size: 12px;">Time Left: <p id="demo"></p></strong></span>
+   </div>
+</div>
+</div>
+</nav>
+<h3 class="survey-title">
+  <p style="white-space: pre-wrap"><%= raw(@attempt.survey.name) %></p>
+</h3>
+<p style="white-space: pre-wrap"><%= raw(@attempt.survey.description) %></p>
+<script>
+    var now = new Date().getTime();
+    var hours = parseInt("<%= @survey.period.to_s[11,13][0,2].to_i %>");
+    var minutes = parseInt("<%= @survey.period.strftime("%M")%>");
+    console.log(hours);
+    var b=(hours*3600000)+(minutes*60000);
+    var countDownDate = new Date().getTime()+b;
+    var x = setInterval(function() {
+        var now = new Date().getTime();
+        var distance = countDownDate - now;
+        var ho = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var mi = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        document.getElementById("demo").innerHTML = ho + " hr "
+        + mi + " min "+seconds+" sec ";
+        if(distance <  60000){
+            document.getElementById("timer").classList.remove('alert-info');
+            document.getElementById("timer").classList.add('alert-danger');
+            console.log("script running");
+        }
+        if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("demo").innerHTML = "EXPIRED";
+            document.getElementById('submit_atempt').click();
+        }
+    }, 1000);
+</script>
+<%= form_for(@attempt, url: attempt_scope(@attempt)) do |f| %>
+<%= hidden_field_tag :survey_id, @survey.id %>
+<%= hidden_field_tag :enrollment, params["enrollment"] %>
+<ol class="questions">
+  <%= f.fields_for :answers, get_answer_fields(@attempt).sample(@attempt.survey.randomcount) do |answer_fields| %>
+  <li>
+    <% question = answer_fields.object.question %>
+    <p class="question" style="font-size: 15px;"><strong><%= question.text %></strong></p>
+    <ul class="question">
+
+      <%= collection_radio_buttons('survey_attempt[answers_attributes]', question.id, question.options, :id, :text,item_wrapper_tag: false) do |b| %>
+      <li class="radio">
+        <%= b.label { b.radio_button + b.text } %>
+    </li>
+    <% end %>
+</ul>
+</li>
+<% end -%>
+</ol>
+<%= f.submit "Submit", class: 'btn btn-success', id: 'submit_atempt' %>
+<% end -%>
+<script>
+    window.location.hash="no-back-button";
+    window.location.hash="Again-No-back-button";//again because google chrome don't insert first hash into history
+    window.onhashchange=function(){window.location.hash="no-back-button";}
+</script>
+
+
+<script type="text/javascript" charset="utf-8">
+    var v=1;
+    //    function toggleFullScreen() {
+        document.fullscreenEnabled = document.fullscreenEnabled || document.mozFullScreenEnabled || document.documentElement.webkitRequestFullScreen;
+        function requestFullscreen(element) {
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullScreen) {
+                element.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
+        }
+        if (document.fullscreenEnabled) {
+            requestFullscreen(document.documentElement);
+        }
+    //    }
+    document.addEventListener("click", function (e) {
+        if (document.fullscreenEnabled && v==1) {
+            requestFullscreen(document.documentElement);
+        }
+        v++;
+    }, false);
+</script>
+
+<script type="text/javascript" charset="utf-8">
+    var isActive;
+    window.onfocus = function () {
+        isActive = true;
+    };
+    window.onblur = function () {
+        isActive = false;
+    };
+    // test
+    var v=0;
+    var i=setInterval(function () {
+        //console.log(window.isActive ? 'active' : 'inactive');
+        if(window.isActive==false && v>=2){
+            alert("You are trying to exit the text window your test will be submitted and you will exit!")
+            document.getElementById('submit_atempt').click();
+            clearInterval(i);
+        } else if(window.isActive==false ){
+            v++;
+            document.getElementById("note").classList.remove('alert-info');
+            document.getElementById("note").classList.add('alert-danger');
+        }
+    }, 100);
+</script>
+<script type="text/javascript" charset="utf-8">
+    $('checkbox').addClass('custom-control-input');
+</script>

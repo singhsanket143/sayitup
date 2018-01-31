@@ -1,0 +1,157 @@
+ <!-- ########################################################################################################## 
+
+                                          MODAL FOR SIGNUP / SIGNIN 
+                                          
+ ########################################################################################################### -->
+
+ <style media="screen">
+  #modal7 .modal-content{
+    padding-top: 130px;
+    padding: 2px;
+  }
+  #modal7 .row2{
+    padding-top: 0px;
+  }
+  #modal7 .row1{
+    padding-bottom: 3px;
+    padding-left: 60px;
+    padding-right: 60px;
+  }
+  #modal7 .row1 input{
+    color: #333;
+    transition: none;
+  }
+  #modal7 .card-panel1{
+    background: rgba(40, 57, 101, .9);
+    height: 37px;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 15px;
+    margin-right: 15px;
+    border-radius: 5px;
+  }
+  #modal7 #tabsign a.active{
+    background: rgba(40, 57, 101, .9);
+    margin-left: -2px;
+    margin-right: -2px;
+    border-radius: 10px;
+    color: white;
+  }
+  #modal7 #tabsign.tabs .indicator{
+    display: none;
+  }
+  #modal7 #tabsign a{
+    color:rgba(40, 57, 101, .9);
+  }
+  #modal7 .btt{
+    background: rgba(40, 57, 101, .9);
+  }
+  div#modal7.modal.open div.modal-content div.row2 div#test-swipe-2.active form#new_user.new_user div.row1 div.input-field.col.s12 input{
+    margin: 0;
+    margin-left: 45px;
+  }
+  div#modal7.modal.open{
+    transform: none;
+    overflow-y: hidden;
+  }
+</style>
+<div class="row2">
+  <ul id="tabsign" class="tabs tabs-fixed-width">
+    <li class="tab col s6 "><a href="#test-swipe-1"> Sign In</a></li>
+    <li class="tab col s6 "><a class="active" href="#test-swipe-2">Sign Up</a></li>
+  </ul>
+  <br>
+  <div id="test-swipe-1">
+    <div class="card-panel1 z-depth-4">
+     <div class="center-align">
+      <%- if devise_mapping.omniauthable? %>
+      <%- resource_class.omniauth_providers.each do |provider| %>
+      <%= link_to ('<i class="fa fa-facebook-square"></i>').html_safe, omniauth_authorize_path(resource_name, :facebook),class:"waves-effect waves-light btn transparent"%><br />
+      <% end -%>
+      <% end -%>
+    </div>
+  </div>
+  <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+  <form class="col s12">
+    <div class="row1">
+      <div class="input-field col s12">
+        <i class="material-icons prefix">email</i>
+        <%= f.email_field :email, autofocus: false, class:"validate"%>
+        <label for="user_email", class="">Email</label>
+      </div>
+      <div class="input-field col s12">
+        <i class="material-icons prefix">lock_outline</i>
+        <%= f.password_field :password, autocomplete: "off", class:"validate" %>
+        <label for="user_password">Password</label>
+      </div>
+      
+      <div class="">
+        <% if devise_mapping.rememberable? -%>
+        <%= f.check_box :remember_me %>
+        <label for="user_remember_me">Remember me</label>
+        <!-- <%= f.label :remember_me %> -->
+        <% end %></p>
+        <% if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
+        <%= link_to "Forgot your password?", new_password_path(resource_name) %><br />
+        <% end -%>
+        <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
+        <%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name) %><br />
+        <% end -%>
+      </div>
+      <br>
+      <button class="btn waves-effect waves-light right btt white-text" type="submit" name="action">
+        <i class="material-icons right">send</i>SUBMIT</button>
+        <br>
+      </div>
+    </form>
+    <%end%>
+  </div>
+  <div id="test-swipe-2">
+    <div class="card-panel1 z-depth-4">
+     <div class="center-align">
+      <%- if devise_mapping.omniauthable? %>
+      <%- resource_class.omniauth_providers.each do |provider| %>
+      <%= link_to ('<i class="fa fa-facebook-square"></i>').html_safe, omniauth_authorize_path(resource_name, :facebook),class:"waves-effect waves-light btn transparent"%><br />
+      <% end -%>
+      <% end -%>
+    </div>
+  </div>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+  <%= devise_error_messages! %>
+  <form class="col s12">
+    <div class="row1">
+      <div class="input-field col s12">
+        <i class="material-icons prefix">account_circle</i>
+        <%=f.text_field :name, autofocus: false,class:"validate"%>
+        <label for="user_name">Username</label>
+      </div>
+      <div class="input-field col s12">
+        <i class="material-icons prefix">email</i>
+        <%= f.email_field :email, autofocus: false, class:"validate"%>
+        <label for="user_email", class="">Email</label>
+      </div>
+
+      <div class="input-field col s12">
+        <i class="material-icons prefix">lock_outline</i>
+        <% if @minimum_password_length %>
+        <em>(<%= @minimum_password_length %> characters minimum)</em>
+        <% end %>
+        <%= f.password_field :password, autocomplete: "off", class:"validate"%>
+        <label for="user_password">Password</label>
+      </div>
+      <div class="input-field col s12">
+        <i class="material-icons prefix">lock_outline</i>
+        <%= f.password_field :password_confirmation, autocomplete: "off", class:"validate" %>
+        <label for="user_password">Confirm Password</label>
+      </div>
+      <br>
+      <button class="btn waves-effect waves-light right btt white-text" type="submit" name="action">
+        <i class="material-icons right">send</i>SUBMIT</button>
+        <br>
+      </div>
+    </form>
+    <%end%>
+  </div>
+</div>
